@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { Section } from './Section';
 import { Filter } from './Filter';
@@ -11,15 +10,6 @@ export function App() {
   const filterValue = useSelector(state => state.filter.value);
   const contacts = useSelector(state => state.contacts.contact);
   const dispatch = useDispatch();
-
-  console.log(contacts);
-  // useEffect(() => {
-  //   const contactsStorage = JSON.parse(localStorage.getItem('contacts'));
-  //   if (contactsStorage) {
-  //     console.log(contactsStorage)
-  //     dispatch(addContacts(contactsStorage));
-  //   }
-  // }, [dispatch]);
 
   const contactsSubmit = e => {
     console.log(e);
