@@ -1,30 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { Section } from './Section';
 import { Filter } from './Filter';
 import { ContactList } from './ContactList';
 import { ContactForm } from './ContactForm';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContacts, removeContacts } from 'redux/contactsSlice';
 
 export function App() {
-  const [contacts, setContacts] = useState([
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ]);
-  const [filter, setFilter] = useState('');
+  const filterValue = useSelector(state => state.filter.value);
+  const contacts = useSelector(state => state.contacts.contact);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const contactsStorage = JSON.parse(localStorage.getItem('contacts'));
-    if (contactsStorage) {
-      setContacts(contactsStorage);
-    }
-  }, []);
-
-  useEffect(() => {
-    
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  console.log(contacts);
+  // useEffect(() => {
+  //   const contactsStorage = JSON.parse(localStorage.getItem('contacts'));
+  //   if (contactsStorage) {
+  //     console.log(contactsStorage)
+  //     dispatch(addContacts(contactsStorage));
+  //   }
+  // }, [dispatch]);
 
   const contactsSubmit = e => {
     console.log(e);
@@ -32,6 +27,7 @@ export function App() {
     const name = e.name;
     const number = e.number;
     const contactsLists = [...contacts];
+    console.log(contactsLists);
 
     if (
       contactsLists.findIndex(
@@ -42,23 +38,14 @@ export function App() {
     ) {
       alert(`${name} is already in contacts.`);
     } else {
-      contactsLists.push({ name, id, number });
+      dispatch(addContacts({ id, name, number }));
     }
-
-    setContacts(contactsLists);
-  };
-
-  const contactsDelete = e => {
-    setContacts(contacts.filter(contact => contact.id !== e));
-  };
-
-  const filterChange = e => {
-    setFilter(e.target.value);
   };
 
   const getFilteredContacts = () => {
+    console.log(contacts)
     const filterContactsList = contacts.filter(contact => {
-      return contact.name.toLowerCase().includes(filter.toLowerCase());
+      return contact.name.toLowerCase().includes(filterValue);
     });
 
     return filterContactsList;
@@ -70,10 +57,10 @@ export function App() {
         <ContactForm onSubmit={contactsSubmit} />
       </Section>
       <Section title="Contacts">
-        <Filter filter={filter} contactsChange={filterChange} />
+        <Filter filter={filterValue} />
         <ContactList
           contacts={getFilteredContacts()}
-          contactsDelete={contactsDelete}
+          contactsDelete={e => dispatch(removeContacts(e))}
         />
       </Section>
     </div>
