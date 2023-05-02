@@ -1,8 +1,9 @@
-import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { update } from 'redux/filterSlice';
+import { useSelector } from 'react-redux';
 
-export const Filter = ({ filter }) => {
+export const Filter = () => {
+  const filterValue = useSelector(state => state.filter.value);
   const dispatch = useDispatch()
   return (
     <div>
@@ -11,13 +12,9 @@ export const Filter = ({ filter }) => {
         type="text"
         name="filter"
         placeholder="Enter filter"
-        value={filter}
+        value={filterValue}
         onChange={e => dispatch(update(e.target.value))}
       />
     </div>
   );
-};
-
-Filter.propTypes = {
-  filter: PropTypes.string.isRequired,
 };
